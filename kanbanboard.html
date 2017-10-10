@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div style="height: 1000px">
+		<div class="status_container" id="todo"> 
+			<div class="board" id="board1" draggable=true> 1 </div>
+		</div>
+		<div class="status_container" id="start">
+			<div class="board" id="board2" draggable=true> 2 </div>
+		</div>
+
+		<div class="status_container" id="blocked">
+			<div class="board" id="board3" draggable=true> 3 </div>
+			<div class="board" id="board4" draggable=true> 4 </div>
+			<div class="board" id="board5" draggable=true> 5 </div>
+		</div>
+		<div class="status_container" id="testing">
+			<div class="board" id="board6" draggable=true> 6 </div>
+			<div class="board" id="board7" draggable=true> 7 </div>
+			<div class="board" id="board8" draggable=true> 8 </div>
+		</div>
+		<div class="status_container" id="done">
+			<div class="board" id="board9" draggable=true> 9 </div>
+			<div class="board" id="board10" draggable=true> 10 </div>
+			<div class="board" id="board11" draggable=true> 11 </div>
+		</div>
+	</div>
+
+
+	<style>
+		.status_container{
+			width: 200px; 
+			float:left; 
+	    	border-radius: 12px;
+	    	margin-left: 10px;
+	    	padding-bottom: 50px;
+		}
+		.board{
+			cursor: pointer;
+			border: 2px solid gray;
+			text-align: center;
+			padding: 2px;
+		}
+	</style>
+	<script>
+		window.onload=function(){
+			try{
+				var holdEl=null;
+				var elDiv=document.getElementsByTagName("div");
+				for (var x=0; x<elDiv.length; x++){
+					if(elDiv[x].className=="board"){
+						elDiv[x].addEventListener('dragstart',function(ev){
+							ev.dataTransfer.setData("html", ev.target.id);
+							holdEl=this.id;
+						});
+						elDiv[x].addEventListener('dragend',function(ev){
+							board_opacity();
+						});
+					}
+					if(elDiv[x].className=="status_container"){
+						elDiv[x].addEventListener('drop', function (ev){
+							ev.preventDefault();
+							board_opacity();
+		            	}, false);
+		            	elDiv[x].addEventListener('dragover',function(ev){
+		            		ev.preventDefault();
+		            		var data=ev.dataTransfer.getData("html");
+		            		var dataObject=document.getElementById(data);
+		            		dataObject.style="opacity: 0.3";
+						    if(ev.target.className=="status_container")
+							    ev.target.appendChild(dataObject);
+						    else if (dataObject.id != ev.target.id)
+						    	ev.target.parentElement.insertBefore(dataObject,ev.target);
+		            	},false);
+					}
+				}
+			}catch(ex){console.log(ex.message);}
+		};
+		function board_opacity(){
+			var elDiv=document.getElementsByTagName("div");
+			for (var x=0; x<elDiv.length; x++){
+				if(elDiv[x].className=="board")
+					elDiv[x].style="opacity:1";
+			}
+		}
+	</script>
+
+</body>
+</html>
